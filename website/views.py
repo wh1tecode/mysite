@@ -5,10 +5,11 @@ from django.http import JsonResponse, HttpResponse
 # Create your views here.
 
 def home_view(request):
-    return render(request, "index.html")
-
-def about_view(request):
-    return JsonResponse({"About": 2})
-
-def contact_view(request):
-    return JsonResponse({"Contact": 3})
+    context = {
+        "twitter": "https://www.x.com/", 
+        "facebook": "https://facebook.com", 
+        "instagram": "https://www.instagram.com",
+        "skype": "https://www.skype.com/",
+        "linkedin": "https://www.linkedin.com/",
+    }
+    return render(request=request, template_name="index.html",context=context)

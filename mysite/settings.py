@@ -118,7 +118,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+MEDIA_URL = 'media/'
+
 STATIC_ROOT = join(BASE_DIR, "static")
+
+MEDIA_ROOT = join(BASE_DIR, "media")
 
 STATICFILES_DIRS = [
     join(BASE_DIR, "statics"),

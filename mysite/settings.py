@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'website'
 ]
 
 MIDDLEWARE = [
@@ -55,7 +56,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [join(BASE_DIR, "templates")],
+        'DIRS': [join(BASE_DIR, "templates\\website")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,7 +126,7 @@ STATIC_ROOT = join(BASE_DIR, "static")
 MEDIA_ROOT = join(BASE_DIR, "media")
 
 STATICFILES_DIRS = [
-    join(BASE_DIR, "statics"),
+    join(BASE_DIR, "statics\\website"),
 ]
 
 # Default primary key field type

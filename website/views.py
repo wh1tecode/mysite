@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from website.models import About
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from website.forms import LoginForm
 
 
 # Create your views here.
 
-
+@login_required(login_url="/")
 def home_view(request):
     context = {
         "social_media": {

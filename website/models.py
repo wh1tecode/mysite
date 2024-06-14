@@ -8,6 +8,7 @@ class User(models.Model):
     last_name = models.CharField(max_length=30)
     phone_number = models.CharField(max_length=20)
     email_address = models.EmailField(max_length=50)
+    url_address = models.URLField(blank=True)
     birth_date = models.DateField()
     created_date = models.DateField(auto_now_add=True)
     updated_date = models.DateField(auto_now=True)

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
-from website.models import About
+from website.models import About, User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from website.forms import LoginForm
@@ -8,8 +8,8 @@ from website.forms import LoginForm
 
 # Create your views here.
 
-@login_required(login_url="/")
-def home_view(request):
+# @login_required(login_url="/")
+def home_view(request, page_id):
     context = {
         "social_media": {
             "twitter": "https://www.x.com/",
@@ -19,9 +19,12 @@ def home_view(request):
             "linkedin": "https://www.linkedin.com/",
         }
     }
-    about = About.objects.all()
-    print(about)
-    return render(request=request, template_name="resume\index.html", context=context)
+    try:
+        user = User.objects.get(id=page_id)
+        return render(request=request, template_name="resume\index.html", context=context)
+    except Exception:
+        return redirect("/")
+
 
 
 def login_view(request):
@@ -45,5 +48,7 @@ def logout_view(request):
     return
 
 
-def register_view(request):
-    return
+def create_resume_view(request):
+    return render(
+        request=request, template_name="create_resume\index.html"
+    )

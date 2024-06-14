@@ -1,0 +1,140 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="author" content="colorlib.com">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up Form</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="{% static 'create_resume/fonts/material-icon/css/material-design-iconic-font.min.css' %}">
+    <link rel="stylesheet" href="{% static 'create_resume/vendor/nouislider/nouislider.min.css' %}">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="{% static 'create_resume/css/style.css' %}">
+</head>
+
+<body>
+
+    <div class="main">
+
+        <div class="container">
+            <form method="POST" id="signup-form" class="signup-form" action="#">
+                <div>
+                    <h3>Personal info</h3>
+                    <fieldset>
+                        <h2>Personal information</h2>
+                        <p class="desc">Please enter your infomation and proceed to next step so we can build your account</p>
+                        <div class="fieldset-content">
+                            <div class="form-row">
+                                <label class="form-label">Name</label>
+                                <div class="form-flex">
+                                    <div class="form-group">
+                                        <input type="text" name="first_name" id="first_name" />
+                                        <span class="text-input">First</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="last_name" id="last_name" />
+                                        <span class="text-input">Last</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" name="email" id="email" />
+                                <span class="text-input">Example  :<span>  Jeff@gmail.com</span></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="text" name="phone" id="phone" />
+                            </div>
+                            <div class="form-date">
+                                <label for="birth_date" class="form-label">Birth Date</label>
+                                <div class="form-date-group">
+                                    <div class="form-date-item">
+                                        <select id="birth_month" name="birth_month"></select>
+                                        <span class="text-input">MM</span>
+                                    </div>
+                                    <div class="form-date-item">
+                                        <select id="birth_date" name="birth_date"></select>
+                                        <span class="text-input">DD</span>
+                                    </div>
+                                    <div class="form-date-item">
+                                        <select id="birth_year" name="birth_year"></select>
+                                        <span class="text-input">YYYY</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <h3>About</h3>
+                    <fieldset>
+                        <h2>About</h2>
+                        <p class="desc">Please enter your information and proceed to next step</p>
+                        <div class="fieldset-content">
+                            <div class="form-row">
+                                <label class="form-label">Title</label>
+                                <div class="form-flex">
+                                    <div class="form-group">
+                                        <input type="text" name="about_title" id="about_title" placeholder="Python backend developer"/>
+                                        <span class="text-input">title</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea1" class="form-label">Phone</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                              </div></div>
+                            <div class="choose-bank">
+                                <p class="choose-bank-desc">Or choose from these popular bank</p>
+                                <div class="form-radio-flex">
+                                    <div class="form-radio-item">
+                                        <input type="radio" name="choose_bank" id="bank_1" value="bank_1" checked="checked" />
+                                        <label for="bank_1"><img src="{% static 'create_resume/images/bank-1.jpg' %}" alt=""></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <h3>Set Financial Goals</h3>
+                    <fieldset>
+                        <h2>Set Financial Goals</h2>
+                        <p class="desc">Set up your money limit to reach the future plan</p>
+                        <div class="fieldset-content">
+                            <div class="donate-us">
+                                <div class="price_slider ui-slider ui-slider-horizontal">
+                                    <div id="slider-margin"></div>
+                                    <p class="your-money">
+                                        Your money you can spend per month :
+                                        <span class="money" id="value-lower"></span>
+                                        <span class="money" id="value-upper"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- JS -->
+    <script src="{% static 'create_resume/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'create_resume/vendor/jquery-validation/dist/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'create_resume/vendor/jquery-validation/dist/additional-methods.min.js' %}"></script>
+    <script src="{% static 'create_resume/vendor/jquery-steps/jquery.steps.min.js' %}"></script>
+    <script src="{% static 'create_resume/vendor/minimalist-picker/dobpicker.js' %}"></script>
+    <script src="{% static 'create_resume/vendor/nouislider/nouislider.min.js' %}"></script>
+    <script src="{% static 'create_resume/vendor/wnumb/wNumb.js' %}"></script>
+    <script src="{% static 'create_resume/js/main.js' %}"></script>
+</body>
+
+</html>

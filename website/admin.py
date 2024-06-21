@@ -1,7 +1,9 @@
 from django.contrib import admin
 from website.models import *
 
+
 # Register your models here.
+
 
 
 @admin.register(User)
@@ -13,8 +15,14 @@ class UserAdmin(admin.ModelAdmin):
         "last_name",
         "phone_number",
         "email_address",
+        "url_address",
         "birth_date",
     )
+    def get_queryset(self, request):
+        qs = super(admin.ModelAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(admin=request.user.id)
 
 
 @admin.register(About)
@@ -27,36 +35,60 @@ class AboutAdmin(admin.ModelAdmin):
         "degree",
         "freelance",
     )
+    def get_queryset(self, request):
+        qs = super(admin.ModelAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user.id)
 
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Resume)
-class SkillAdmin(admin.ModelAdmin):
-    pass
+    list_display = (
+        "name",
+        "score",
+    )
+    def get_queryset(self, request):
+        qs = super(admin.ModelAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(about=request.user.id)
 
 
 @admin.register(Education)
-class SkillAdmin(admin.ModelAdmin):
-    pass
+class EducationAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super(admin.ModelAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user.id)
 
 
 @admin.register(Experience)
-class SkillAdmin(admin.ModelAdmin):
-    pass
+class ExperienceAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super(admin.ModelAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user.id)
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super(admin.ModelAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user.id)
 
 
 @admin.register(Portfolio)
-class SkillAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Category)
-class SkillAdmin(admin.ModelAdmin):
-    pass
+class PortfolioAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super(admin.ModelAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(owner=request.user.id)
 
 
 @admin.register(Contact)

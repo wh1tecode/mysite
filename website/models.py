@@ -19,6 +19,8 @@ class User(models.Model):
 
     class meta:
         ordering = "created_date"
+    def __str__(self) -> str:
+        return self.first_name + " " + self.last_name
 
 
 class About(models.Model):

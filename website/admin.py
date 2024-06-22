@@ -1,9 +1,9 @@
 from django.contrib import admin
+from django.contrib.auth.models import User as AdminUser
 from website.models import *
 
 
 # Register your models here.
-
 
 
 @admin.register(User)
@@ -18,11 +18,29 @@ class UserAdmin(admin.ModelAdmin):
         "url_address",
         "birth_date",
     )
+
+    def render_change_form(self, request, context, *args, **kwargs):
+        if request.user.is_superuser:
+            return super(AdminUser, self).render_change_form(
+                request, context, *args, **kwargs
+            )
+        user = AdminUser.objects.get(id=request.user.id)
+        print(context)
+        context["adminform"].form.fields["admin"].queryset = AdminUser.objects.filter(
+            id=user.id
+        )
+        
+        return super(UserAdmin, self).render_change_form(
+            request, context, *args, **kwargs
+        )
+
     def get_queryset(self, request):
         qs = super(admin.ModelAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(admin=request.user.id)
+        print(request.user.id)
+        user = AdminUser.objects.get(id=request.user.id)
+        return qs.filter(admin=user)
 
 
 @admin.register(About)
@@ -35,11 +53,28 @@ class AboutAdmin(admin.ModelAdmin):
         "degree",
         "freelance",
     )
+
+    def render_change_form(self, request, context, *args, **kwargs):
+        if request.user.is_superuser:
+            return super(AboutAdmin, self).render_change_form(
+                request, context, *args, **kwargs
+            )
+        user = AdminUser.objects.get(id=request.user.id)
+        context["adminform"].form.fields["owner"].queryset = User.objects.filter(
+            admin=user
+        )
+        
+        return super(AboutAdmin, self).render_change_form(
+            request, context, *args, **kwargs
+        )
+
     def get_queryset(self, request):
         qs = super(admin.ModelAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(owner=request.user.id)
+        auser = AdminUser.objects.get(id=request.user.id)
+        user = User.objects.get(admin=auser)
+        return qs.filter(owner=user)
 
 
 @admin.register(Skill)
@@ -48,47 +83,132 @@ class SkillAdmin(admin.ModelAdmin):
         "name",
         "score",
     )
+
+    def render_change_form(self, request, context, *args, **kwargs):
+        if request.user.is_superuser:
+            return super(SkillAdmin, self).render_change_form(
+                request, context, *args, **kwargs
+            )
+        auser = AdminUser.objects.get(id=request.user.id)
+        user = User.objects.get(admin=auser)
+        about = About.objects.get(owner=user)
+        print(context)
+        context["adminform"].form.fields["about"].queryset = About.objects.filter(
+            owner=user
+        )
+        
+        return super(SkillAdmin, self).render_change_form(
+            request, context, *args, **kwargs
+        )
+
     def get_queryset(self, request):
         qs = super(admin.ModelAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(about=request.user.id)
+        auser = AdminUser.objects.get(id=request.user.id)
+        user = User.objects.get(admin=auser)
+        about = About.objects.get(owner=user)
+        return qs.filter(about=about)
 
 
 @admin.register(Education)
 class EducationAdmin(admin.ModelAdmin):
+    def render_change_form(self, request, context, *args, **kwargs):
+        if request.user.is_superuser:
+            return super(EducationAdmin, self).render_change_form(
+                request, context, *args, **kwargs
+            )
+        user = AdminUser.objects.get(id=request.user.id)
+        context["adminform"].form.fields["owner"].queryset = User.objects.filter(
+            admin=user
+        )
+        
+        return super(EducationAdmin, self).render_change_form(
+            request, context, *args, **kwargs
+        )
+
     def get_queryset(self, request):
         qs = super(admin.ModelAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(owner=request.user.id)
+        auser = AdminUser.objects.get(id=request.user.id)
+        user = User.objects.get(admin=auser)
+        return qs.filter(owner=user)
 
 
 @admin.register(Experience)
 class ExperienceAdmin(admin.ModelAdmin):
+    def render_change_form(self, request, context, *args, **kwargs):
+        if request.user.is_superuser:
+            return super(ExperienceAdmin, self).render_change_form(
+                request, context, *args, **kwargs
+            )
+        user = AdminUser.objects.get(id=request.user.id)
+        context["adminform"].form.fields["owner"].queryset = User.objects.filter(
+            admin=user
+        )
+        
+        return super(ExperienceAdmin, self).render_change_form(
+            request, context, *args, **kwargs
+        )
+
     def get_queryset(self, request):
         qs = super(admin.ModelAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(owner=request.user.id)
+        auser = AdminUser.objects.get(id=request.user.id)
+        user = User.objects.get(admin=auser)
+        return qs.filter(owner=user)
 
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
+    def render_change_form(self, request, context, *args, **kwargs):
+        if request.user.is_superuser:
+            return super(ProjectAdmin, self).render_change_form(
+                request, context, *args, **kwargs
+            )
+        user = AdminUser.objects.get(id=request.user.id)
+        context["adminform"].form.fields["owner"].queryset = User.objects.filter(
+            admin=user
+        )
+        
+        return super(ProjectAdmin, self).render_change_form(
+            request, context, *args, **kwargs
+        )
+
     def get_queryset(self, request):
         qs = super(admin.ModelAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(owner=request.user.id)
+        auser = AdminUser.objects.get(id=request.user.id)
+        user = User.objects.get(admin=auser)
+        return qs.filter(owner=user)
 
 
 @admin.register(Portfolio)
 class PortfolioAdmin(admin.ModelAdmin):
+    def render_change_form(self, request, context, *args, **kwargs):
+        if request.user.is_superuser:
+            return super(PortfolioAdmin, self).render_change_form(
+                request, context, *args, **kwargs
+            )
+        user = AdminUser.objects.get(id=request.user.id)
+        context["adminform"].form.fields["owner"].queryset = User.objects.filter(
+            admin=user
+        )
+        
+        return super(PortfolioAdmin, self).render_change_form(
+            request, context, *args, **kwargs
+        )
+
     def get_queryset(self, request):
         qs = super(admin.ModelAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
-        return qs.filter(owner=request.user.id)
+        auser = AdminUser.objects.get(id=request.user.id)
+        user = User.objects.get(admin=auser)
+        return qs.filter(owner=user)
 
 
 @admin.register(Contact)

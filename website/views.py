@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
-from website.models import About, User, Skill
+from website.models import About, User, Education, Experience, Project, Skill
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from website.forms import LoginForm, CompleteUserData
@@ -24,6 +24,26 @@ def home_view(request, page_id):
         }
     }
     user = User.objects.get(url_address=page_id)
+    about = About.objects.get(owner=user)
+    education = Education.objects.all(owner=user)
+    experience = Experience.objects.all(owner=user)
+    project = Project.objects.all(owner=user)
+    skill = Skill.objects.all(about=about)
+    context["user_first_name"] = user.first_name
+    context["user_last_name"] = user.last_name
+    context["user_birthday"] = user.birth_date.strftime("%m/%d/%Y")
+    context["user_phone_number"] = user.phone_number
+    context["user_email_address"] = user.email_address
+    context["user_title"] = about.title
+    context["user_description"] = about.description
+    context["user_website"] = about.website
+    context["user_city"] = about.city
+    context["user_degree"] = about.degree
+    context["user_is_freelance"] = about.freelance if "Available" else "Unavailable"
+    context["user_education"] = [x.__dict__ for x in education]
+    context["user_experience"] = [x.__dict__ for x in experience]
+    context["user_project"] =  [x.__dict__ for x in project]
+    context["user_skills"] = [x.__dict__ for x in skill]
     return render(request=request, template_name="resume\index.html", context=context)
 
 

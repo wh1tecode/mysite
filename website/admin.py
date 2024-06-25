@@ -25,11 +25,10 @@ class UserAdmin(admin.ModelAdmin):
                 request, context, *args, **kwargs
             )
         user = AdminUser.objects.get(id=request.user.id)
-        print(context)
         context["adminform"].form.fields["admin"].queryset = AdminUser.objects.filter(
             id=user.id
         )
-        
+
         return super(UserAdmin, self).render_change_form(
             request, context, *args, **kwargs
         )
@@ -38,7 +37,6 @@ class UserAdmin(admin.ModelAdmin):
         qs = super(admin.ModelAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
-        print(request.user.id)
         user = AdminUser.objects.get(id=request.user.id)
         return qs.filter(admin=user)
 
@@ -63,7 +61,7 @@ class AboutAdmin(admin.ModelAdmin):
         context["adminform"].form.fields["owner"].queryset = User.objects.filter(
             admin=user
         )
-        
+
         return super(AboutAdmin, self).render_change_form(
             request, context, *args, **kwargs
         )
@@ -92,11 +90,11 @@ class SkillAdmin(admin.ModelAdmin):
         auser = AdminUser.objects.get(id=request.user.id)
         user = User.objects.get(admin=auser)
         about = About.objects.get(owner=user)
-        print(context)
+
         context["adminform"].form.fields["about"].queryset = About.objects.filter(
             owner=user
         )
-        
+
         return super(SkillAdmin, self).render_change_form(
             request, context, *args, **kwargs
         )
@@ -122,7 +120,7 @@ class EducationAdmin(admin.ModelAdmin):
         context["adminform"].form.fields["owner"].queryset = User.objects.filter(
             admin=user
         )
-        
+
         return super(EducationAdmin, self).render_change_form(
             request, context, *args, **kwargs
         )
@@ -147,7 +145,7 @@ class ExperienceAdmin(admin.ModelAdmin):
         context["adminform"].form.fields["owner"].queryset = User.objects.filter(
             admin=user
         )
-        
+
         return super(ExperienceAdmin, self).render_change_form(
             request, context, *args, **kwargs
         )
@@ -172,33 +170,8 @@ class ProjectAdmin(admin.ModelAdmin):
         context["adminform"].form.fields["owner"].queryset = User.objects.filter(
             admin=user
         )
-        
+
         return super(ProjectAdmin, self).render_change_form(
-            request, context, *args, **kwargs
-        )
-
-    def get_queryset(self, request):
-        qs = super(admin.ModelAdmin, self).get_queryset(request)
-        if request.user.is_superuser:
-            return qs
-        auser = AdminUser.objects.get(id=request.user.id)
-        user = User.objects.get(admin=auser)
-        return qs.filter(owner=user)
-
-
-@admin.register(Portfolio)
-class PortfolioAdmin(admin.ModelAdmin):
-    def render_change_form(self, request, context, *args, **kwargs):
-        if request.user.is_superuser:
-            return super(PortfolioAdmin, self).render_change_form(
-                request, context, *args, **kwargs
-            )
-        user = AdminUser.objects.get(id=request.user.id)
-        context["adminform"].form.fields["owner"].queryset = User.objects.filter(
-            admin=user
-        )
-        
-        return super(PortfolioAdmin, self).render_change_form(
             request, context, *args, **kwargs
         )
 

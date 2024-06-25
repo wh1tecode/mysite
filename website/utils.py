@@ -1,4 +1,4 @@
-from website.models import About, User, Skill, Education, Experience, Project, Portfolio
+from website.models import About, User, Skill, Education, Experience, Project
 from django.contrib.auth.models import User as AdminUser, Permission
 from django.contrib.contenttypes.models import ContentType
 from typing import Optional
@@ -26,9 +26,6 @@ def set_user_permissions_to_admin(
     project_permission = Permission.objects.filter(
         content_type=ContentType.objects.get_for_model(Project)
     )
-    portfolio_permission = Permission.objects.filter(
-        content_type=ContentType.objects.get_for_model(Portfolio)
-    )
     skill_permission = Permission.objects.filter(
         content_type=ContentType.objects.get_for_model(Skill)
     )
@@ -37,7 +34,6 @@ def set_user_permissions_to_admin(
     list_of_permissions += education_permission
     list_of_permissions += experience_permission
     list_of_permissions += project_permission
-    list_of_permissions += portfolio_permission
     list_of_permissions += skill_permission
     if skip_permissions_list:
         list_of_permissions = [

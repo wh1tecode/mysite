@@ -1,18 +1,20 @@
+from time import sleep
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from website.models import About, User, Education, Experience, Project, Skill
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from website.forms import LoginForm, CompleteUserData
+from website.forms import LoginForm, CompleteUserData, ContactUs
 from django.contrib.auth.models import User as AdminUser
 from django.contrib.auth.hashers import make_password
 from website.utils import set_user_permissions_to_admin
+from datetime import datetime
 
 
 # Create your views here.
 
 
-@login_required(login_url="/")
+# @login_required(login_url="/")
 def home_view(request, page_id):
     context = {
         "social_media": {
@@ -24,14 +26,22 @@ def home_view(request, page_id):
         }
     }
     user = User.objects.get(url_address=page_id)
+    print(user.avatar_image)
+    print(user.banner_image)
     about = About.objects.get(owner=user)
-    education = Education.objects.all(owner=user)
-    experience = Experience.objects.all(owner=user)
-    project = Project.objects.all(owner=user)
-    skill = Skill.objects.all(about=about)
+    education = Education.objects.filter(owner=user)
+    experience = Experience.objects.filter(owner=user)
+    project = Project.objects.filter(owner=user)
+    skill = Skill.objects.filter(about=about)
+
+    context["user_projects"] = [x.__dict__ for x in project]
+    context["user_projects_name"] = [x["name"] for x in context["user_projects"]]
     context["user_first_name"] = user.first_name
     context["user_last_name"] = user.last_name
     context["user_birthday"] = user.birth_date.strftime("%m/%d/%Y")
+    context["user_avatar_image"] = user.avatar_image
+    context["user_banner_image"] = user.banner_image
+    context["user_age"] = user.age
     context["user_phone_number"] = user.phone_number
     context["user_email_address"] = user.email_address
     context["user_title"] = about.title
@@ -39,11 +49,20 @@ def home_view(request, page_id):
     context["user_website"] = about.website
     context["user_city"] = about.city
     context["user_degree"] = about.degree
-    context["user_is_freelance"] = about.freelance if "Available" else "Unavailable"
+    context["user_is_freelance"] = "Available" if about.freelance else "Unavailable"
     context["user_education"] = [x.__dict__ for x in education]
     context["user_experience"] = [x.__dict__ for x in experience]
-    context["user_project"] =  [x.__dict__ for x in project]
+    context["user_project"] = [x.__dict__ for x in project]
     context["user_skills"] = [x.__dict__ for x in skill]
+    for user_education in context["user_education"]:
+        user_education["started_date"] = user_education["started_date"].strftime("%Y")
+        user_education["ended_date"] = user_education["ended_date"].strftime("%Y")
+    for user_experience in context["user_experience"]:
+        user_experience["responsibilities"] = [
+            x for x in user_experience["responsibilities"].split("\r\n") if x
+        ]
+        user_experience["started_date"] = user_experience["started_date"].strftime("%Y")
+        user_experience["ended_date"] = user_experience["ended_date"].strftime("%Y")
     return render(request=request, template_name="resume\index.html", context=context)
 
 
@@ -68,6 +87,17 @@ def login_view(request):
 
 def logout_view(request):
     return
+
+
+def complete_user_contact_us(request):
+    if request.method == "POST":
+        form = ContactUs(request.POST)
+        print(form.is_valid())
+        if form.is_valid():
+            print(request.user)
+            return JsonResponse(data={"ok": 1})
+
+    return HttpResponse(content={})
 
 
 def complete_user_data(request):
@@ -96,6 +126,7 @@ def complete_user_data(request):
             user.phone_number = form.cleaned_data["phone_number"]
             user.email_address = form.cleaned_data["email_address"]
             user.birth_date = form.cleaned_data["birth_date"]
+            user.age = form.cleaned_data["age"]
             user.avatar_image = form.cleaned_data["avatar_image"]
             about = About()
             about.title = form.cleaned_data["about_title"]
@@ -127,7 +158,7 @@ def complete_user_data(request):
                 if "skill" in s:
                     skill = Skill()
                     skill.about = about
-                    skill.name = s
+                    skill.name = s.split("skill_")[-1]
                     skill.score = form.cleaned_data[s]
                     skill.save()
             return redirect("/home/" + user.url_address)

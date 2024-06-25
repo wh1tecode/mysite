@@ -17,6 +17,7 @@ class CompleteUserData(forms.Form):
     last_name = forms.CharField()
     phone_number = forms.CharField(required=False)
     birth_date = forms.DateField()
+    age = forms.IntegerField()
     email_address = forms.EmailField()
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
@@ -30,3 +31,9 @@ class CompleteUserData(forms.Form):
     skill_django = forms.IntegerField(required=False)
     skill_linux = forms.IntegerField(required=False)
     skill_javascript = forms.IntegerField(required=False)
+
+class ContactUs(forms.Form):
+    name = forms.CharField()
+    email = forms.EmailField()
+    subject = forms.CharField()
+    message = forms.CharField()

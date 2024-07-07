@@ -76,3 +76,4 @@ class Contact(models.Model):
     subject = models.CharField(max_length=40)
     message = models.TextField()
     created_date = models.DateField(auto_now_add=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)

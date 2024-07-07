@@ -1,13 +1,15 @@
 from time import sleep
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
-from website.models import About, User, Education, Experience, Project, Skill
+from website.models import About, User, Education, Experience, Project, Skill, Contact
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from website.forms import LoginForm, CompleteUserData, ContactUs
 from django.contrib.auth.models import User as AdminUser
 from django.contrib.auth.hashers import make_password
-from website.utils import set_user_permissions_to_admin
+from website.utils import set_user_permissions_to_admin, calculate_age
+from django.contrib.messages import get_messages
+from django.contrib import messages
 from datetime import datetime
 
 
@@ -26,8 +28,6 @@ def home_view(request, page_id):
         }
     }
     user = User.objects.get(url_address=page_id)
-    print(user.avatar_image)
-    print(user.banner_image)
     about = About.objects.get(owner=user)
     education = Education.objects.filter(owner=user)
     experience = Experience.objects.filter(owner=user)
@@ -90,18 +90,25 @@ def logout_view(request):
 
 
 def complete_user_contact_us(request):
+    print(request.headers)
     if request.method == "POST":
         form = ContactUs(request.POST)
-        print(form.is_valid())
         if form.is_valid():
-            print(request.user)
-            return JsonResponse(data={"ok": 1})
+            contact = Contact()
+            contact.name = form.cleaned_data["name"]
+            contact.email = form.cleaned_data["email"]
+            contact.subject = form.cleaned_data["subject"]
+            contact.message = form.cleaned_data["message"]
+            url_address = request.headers.get("Referer").split("/")[-1]
+            user = User.objects.get(url_address=url_address)
+            contact.owner = user
+            contact.save()
+            return redirect(request.headers.get("Referer"))
 
     return HttpResponse(content={})
 
 
 def complete_user_data(request):
-
     if request.method == "POST":
         form = CompleteUserData(request.POST, request.FILES)
         if form.is_valid():
@@ -112,6 +119,7 @@ def complete_user_data(request):
                 password=form.cleaned_data["password"],
             )
             if auth:
+                messages.add_message(request=request, level=messages.ERROR, message="username already exists")
                 return redirect("/create_resume")
             admin = AdminUser()
             admin.username = form.cleaned_data["username"]
@@ -126,7 +134,7 @@ def complete_user_data(request):
             user.phone_number = form.cleaned_data["phone_number"]
             user.email_address = form.cleaned_data["email_address"]
             user.birth_date = form.cleaned_data["birth_date"]
-            user.age = form.cleaned_data["age"]
+            user.age = calculate_age(user.birth_date)
             user.avatar_image = form.cleaned_data["avatar_image"]
             about = About()
             about.title = form.cleaned_data["about_title"]
@@ -137,6 +145,7 @@ def complete_user_data(request):
             about.freelance = form.cleaned_data["about_is_freelancer"]
             about.owner = user
             admin.save()
+            print("save admin")
             set_user_permissions_to_admin(
                 admin,
                 [
@@ -144,8 +153,11 @@ def complete_user_data(request):
                     "delete_about",
                     "add_user",
                     "delete_user",
+                    "add_contact",
+                    "change_contact",
                 ],
             )
+            print("set_user_permissions_to_admin")
             auth = authenticate(
                 request,
                 username=form.cleaned_data["username"],
@@ -162,7 +174,11 @@ def complete_user_data(request):
                     skill.score = form.cleaned_data[s]
                     skill.save()
             return redirect("/home/" + user.url_address)
-
+        else:
+            for msg in form.errors.get_json_data(True):
+                msg = msg.replace("_", "").upper()
+                messages.warning(request=request, message=f"this field is required {msg}")
+            return redirect("/create_resume")
     return HttpResponse(content={})
 
 

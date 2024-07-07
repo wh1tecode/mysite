@@ -186,7 +186,17 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    date_hierarchy = "created_date"
-    list_display = ("name", "email", "created_date")
-    list_filter = ("email",)
-    search_fields = ("name", "message")
+    list_display = (
+        "name",
+        "email",
+        "subject",
+        "message",
+    )
+    
+    def get_queryset(self, request):
+        qs = super(admin.ModelAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        auser = AdminUser.objects.get(id=request.user.id)
+        user = User.objects.get(admin=auser)
+        return qs.filter(owner=user)

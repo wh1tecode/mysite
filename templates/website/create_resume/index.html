@@ -20,8 +20,10 @@
 </head>
 
 <body>
+
     <div class="wrapper">
-        <form method="POST" action="/complete_user_data/" enctype="multipart/form-data" id="complete_user_data" >
+        <form method="POST" action="/complete_user_data/" enctype="multipart/form-data" id="complete_user_data">
+
             {% csrf_token %}
             <div id="wizard">
                 <!-- SECTION 1 -->
@@ -59,24 +61,32 @@
                                 <input type="date" name="birth_date" id="birth_date" placeholder="birthday"
                                     class="form-control" required>
                             </div>
-                            <div class="form-holder">
-                                <input type="number" name="age" id="age" placeholder="age"
-                                    class="form-control" required>
-                            </div>
                         </div>
                     </div>
                     <div class="form-holder">
                         <input type="email" name="email_address" id="email_address" placeholder="Email"
                             class="form-control" required>
                     </div>
-                    <div class="form-holder">
-                        <input type="text" name="username" id="username" placeholder="Create a username" class="form-control" required>
-                    </div>
-                    <div class="form-holder">
-                        <input type="password" name="password" id="password" placeholder="Create a password" class="form-control" required>
-                    </div>
-                </section>
+                    <div class="form-holder has-error">
+                        <input type="text" name="username" id="username" placeholder="Create a username"
+                            class="form-control" required>
+                        
 
+                    </div>
+                    <div class="form-holder">
+                        <input type="password" name="password" id="password" placeholder="Create a password"
+                            class="form-control" required>
+                    </div>
+                    
+                    {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong></strong> {{message}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    
+                </section>
+                
                 <!-- SECTION 2 -->
                 <h4></h4>
                 <section>
@@ -140,7 +150,8 @@
                     <div class="form-holder" style="margin: 0;">
                         <label for="skill_{{ key }}" class="col-sm-2 col-form-label">{{key}}</label>
                         <div class="col-sm-10">
-                            <input type="range" class="form-range" min="{{value}}" max="100" id="skill_{{ key }}" name="skill_{{ key }}">
+                            <input type="range" class="form-range" min="{{value}}" max="100" id="skill_{{ key }}"
+                                name="skill_{{ key }}">
                         </div>
                     </div>
                     {% endfor %}
@@ -170,7 +181,6 @@
             </div>
         </form>
     </div>
-
 
     <script src="{% static 'create_resume/js/jquery-3.3.1.min.js' %}"></script>
 

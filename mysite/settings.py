@@ -56,7 +56,7 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [join(BASE_DIR, "templates\\website")],
+        'DIRS': [join(BASE_DIR, "templates", "website")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': join(BASE_DIR, "db.sqlite3"),
     }
 }
 
@@ -126,7 +126,7 @@ STATIC_ROOT = join(BASE_DIR, "static")
 MEDIA_ROOT = join(BASE_DIR, "media")
 
 STATICFILES_DIRS = [
-    join(BASE_DIR, "statics\\website"),
+    join(BASE_DIR, "statics", "website"),
 ]
 
 # Default primary key field type

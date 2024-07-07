@@ -11,6 +11,7 @@ from website.utils import set_user_permissions_to_admin, calculate_age
 from django.contrib.messages import get_messages
 from django.contrib import messages
 from datetime import datetime
+from os.path import join
 
 
 # Create your views here.
@@ -63,7 +64,9 @@ def home_view(request, page_id):
         ]
         user_experience["started_date"] = user_experience["started_date"].strftime("%Y")
         user_experience["ended_date"] = user_experience["ended_date"].strftime("%Y")
-    return render(request=request, template_name="resume\index.html", context=context)
+    return render(
+        request=request, template_name=join("resume", "index.html"), context=context
+    )
 
 
 def login_view(request):
@@ -81,7 +84,9 @@ def login_view(request):
     else:
         form = LoginForm()
     return render(
-        request=request, template_name="login\index.html", context={"form": form}
+        request=request,
+        template_name=join("login", "index.html"),
+        context={"form": form},
     )
 
 
@@ -119,7 +124,11 @@ def complete_user_data(request):
                 password=form.cleaned_data["password"],
             )
             if auth:
-                messages.add_message(request=request, level=messages.ERROR, message="username already exists")
+                messages.add_message(
+                    request=request,
+                    level=messages.ERROR,
+                    message="username already exists",
+                )
                 return redirect("/create_resume")
             admin = AdminUser()
             admin.username = form.cleaned_data["username"]
@@ -177,7 +186,9 @@ def complete_user_data(request):
         else:
             for msg in form.errors.get_json_data(True):
                 msg = msg.replace("_", "").upper()
-                messages.warning(request=request, message=f"this field is required {msg}")
+                messages.warning(
+                    request=request, message=f"this field is required {msg}"
+                )
             return redirect("/create_resume")
     return HttpResponse(content={})
 
@@ -187,5 +198,7 @@ def create_resume_view(request):
     context = {"skills": skills}
 
     return render(
-        request=request, template_name="create_resume\index.html", context=context
+        request=request,
+        template_name=join("create_resume", "index.html"),
+        context=context,
     )

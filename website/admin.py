@@ -21,7 +21,8 @@ class UserAdmin(admin.ModelAdmin):
 
     def render_change_form(self, request, context, *args, **kwargs):
         if request.user.is_superuser:
-            return super(AdminUser, self).render_change_form(
+            print(request.user.is_superuser)
+            return super(UserAdmin, self).render_change_form(
                 request, context, *args, **kwargs
             )
         user = AdminUser.objects.get(id=request.user.id)

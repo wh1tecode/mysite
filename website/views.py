@@ -28,7 +28,11 @@ def home_view(request, page_id):
             "linkedin": "https://www.linkedin.com/",
         }
     }
-    user = User.objects.get(url_address=page_id)
+    print(page_id)
+    try:
+        user = User.objects.get(url_address=page_id)
+    except Exception:
+        return redirect("/")
     about = About.objects.get(owner=user)
     education = Education.objects.filter(owner=user)
     experience = Experience.objects.filter(owner=user)
@@ -51,6 +55,7 @@ def home_view(request, page_id):
     context["user_city"] = about.city
     context["user_degree"] = about.degree
     context["user_is_freelance"] = "Available" if about.freelance else "Unavailable"
+    context["user_language"] = about.language
     context["user_education"] = [x.__dict__ for x in education]
     context["user_experience"] = [x.__dict__ for x in experience]
     context["user_project"] = [x.__dict__ for x in project]
@@ -202,3 +207,7 @@ def create_resume_view(request):
         template_name=join("create_resume", "index.html"),
         context=context,
     )
+
+
+def blog_view(request):
+    return render(request=request, template_name=join("blog", "index.html"))
